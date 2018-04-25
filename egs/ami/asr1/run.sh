@@ -104,6 +104,7 @@ nmics=$(echo $mic | sed 's/[a-z]//g') # e.g. 8 for mdm8.
 AMI_DIR=$PWD/wav_db # Default,
 case $(hostname -d) in
     clsp.jhu.edu) AMI_DIR=/export/corpora4/ami/amicorpus ;; # JHU,
+    fit.vutbr.cz) AMI_DIR=/mnt/matylda2/data/AMI ;; #BUT
 esac
 
 train_set=${mic}_train

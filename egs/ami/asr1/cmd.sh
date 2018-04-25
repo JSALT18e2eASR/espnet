@@ -14,7 +14,23 @@ export train_cmd="run.pl --mem 2G"
 export cuda_cmd="run.pl --mem 2G --gpu 1"
 export decode_cmd="run.pl --mem 4G"
 
-# JHU setup
-#export train_cmd="queue.pl --mem 2G"
-#export cuda_cmd="queue.pl --mem 2G --gpu 1 --config conf/gpu.conf"
-#export decode_cmd="queue.pl --mem 4G"
+case $(hostname -d) in
+    clsp.jhu.edu) 
+	# JHU setup
+	export train_cmd="queue.pl --mem 2G"
+	export cuda_cmd="queue.pl --mem 2G --gpu 1 --config conf/gpu.conf"
+	export decode_cmd="queue.pl --mem 4G"
+	;;
+    fit.vutbr.cz)
+	# BUT setup
+	declare -A user2matylda=([iveselyk]=matylda5 [karafiat]=matylda3 [ihannema]=matylda5 [baskar]=matylda6)
+	matylda=${user2matylda[$USER]}
+	queue="all.q@@blade" #,all.q@@speech"
+	#gpu_queue="long.q@@gpu,long.q@@speech-gpu,eval.q"
+	gpu_queue="long.q@@gpu,long.q@@speech-gpu"
+	#export plain_cmd="run.pl" # Runs locally (initial GMM training),
+	export train_cmd="queue.pl -q $queue -l ram_free=1.5G,mem_free=1.5G,${matylda}=0.25"
+	export decode_cmd="queue.pl -q $queue -l ram_free=5.5G,mem_free=5.5G,${matylda}=0.5"
+	export cuda_cmd="queue.pl -q $gpu_queue -l gpu=1 -l ram_free=1G,mem_free=1G"
+	;;
+esac
